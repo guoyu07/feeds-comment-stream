@@ -24,12 +24,12 @@ app.use(function(req, res, next) {
 // Publis data into public feed
 // Does not require any auth
 app.post('/comments', (req, res) => {
-  // Extends item by another parameters
-  const comment = Object.assign(req.body, { id: uuidv4(), timestamp: Date.now() });
+  const comment = Object.assign(req.body, { created: Date.now() }); 
+  // Seletect feedId
   const feedId = (comment.parentCommentId) ? `feed-${comment.parentCommentId}` : 'comments';
 
   feeds
-    .publish(feedId, comment)
+    .publish(feedId, req.body)
     .then(data => res.sendStatus(204))
     .catch(err => res.status(400).send(err));
 });

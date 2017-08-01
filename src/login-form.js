@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './login-form.css';
 
 class LoginForm extends Component {
 
@@ -14,11 +15,11 @@ class LoginForm extends Component {
     }
 
     this.props.onFormSubmit(this.state.inputText);
-  }
+  };
 
   onChange = (e) => {
     this.setState({inputText: e.target.value});
-  }
+  };
 
   render () {
     return (

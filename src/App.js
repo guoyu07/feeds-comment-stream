@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import 'bulma/css/bulma.css'
-import './App.css';
 
-import Comments from './Comments.js';
-import LoginForm from './LoginForm.js';
+import Header from './header';
+import Footer from './footer';
+import CommentsBlock from './comments';
+import LoginForm from './login-form.js';
 
 import Feeds from 'pusher-feeds-client';
 
@@ -21,14 +22,14 @@ class App extends Component {
     user: null
   };
 
-  componentDidMount () {
+  componentWillMount () {
     this.setState({user: localStorage.getItem('username')});
 
     this.commentsFeeds = feeds.feed("comments");
     this.commentsFeeds.subscribe({
       previousItems: 5,
       onItem: event => {
-        const comment = event.body.data;
+        const comment = Object.assign(event.body.data, {id: event.eventId});
 
         this.setState({comments: [comment, ...this.state.comments]});
 
@@ -37,16 +38,15 @@ class App extends Component {
 
         this.subCommentsFeeds[newFeedId] = feeds.feed(newFeedId);
         this.subCommentsFeeds[newFeedId].subscribe({
-          previousItems: 5,
+          previousItems: 3,
           onItem: event => {
-            const comment = event.body.data;
+            const comment = Object.assign(event.body.data, {id: event.eventId});
 
-            this.setState({ subComments: [...this.state.subComments, comment] });
+            this.setState({subComments: [...this.state.subComments, comment]});
           }
         });
       },
       onError: error => {
-        console.log('onError': error);
         this.setState({ error });
       }
     });
@@ -64,10 +64,10 @@ class App extends Component {
     );
   }
 
-  onFormSubmit = (userName) => {
+  onLoginFormSubmit = (userName) => {
     localStorage.setItem('username', userName);
     this.setState({user: userName});
-  }
+  };
 
   onCommentSubmit = (comment, parentCommentId) => {
     fetch('http://localhost:5000/comments', {
@@ -85,50 +85,58 @@ class App extends Component {
 
     feed
       .getHistory({ fromId: commentId, limit: 10 })
-      .then(({ items }) => {
-        console.log(items);
+      .then((data) => {
+        const { items } = data;
+
+        const formatedItems = items
+          // Just hack around bug in getHistory
+          // Remove last requested item
+          .filter(item => item.id != commentId)
+          .map(item => Object.assign(item.data, { id: item.id }));
+        
+        if (formatedItems.length < 1) {
+          if (this.state.subComments.length > 0) {
+            this.state.subComments[0].hasNextItem = false;
+            this.setState({subComments: this.state.subComments});
+          }
+          return;
+        }
+
+        formatedItems[formatedItems.length - 1].hasNextItem = typeof data.next_id === 'string'; 
+
+        if (parentCommentId) {
+          formatedItems.sort(item => item.created);
+          this.setState({subComments: [...formatedItems, ...this.state.subComments]});
+        } else {
+          this.setState({comments: [...this.state.comments, ...formatedItems]});
+        }
       });
   };
 
   render() {
+    const { user, comments, subComments } = this.state;
+
     return (
       <div className="container">
-        <section style={{marginBottom: 20}} className="hero is-info">
-          <div className="hero-body">
-            <div className="container">
-              <img style={{width: 150}} alt="Feeds comment stream" src="https://d1mm8o1ylufpl8.cloudfront.net/images/pusher-logo-light.svg" />
-              <h1 className="subtitle">
-                Feeds Comment Stream Demo
-              </h1>
-            </div>
-          </div>
-        </section>
+        <Header />
+        
+        {this.getError()}
 
         <div className="content">
-        {!this.state.user ?
-          <LoginForm
-            onFormSubmit={this.onFormSubmit}
-          /> :
-          <Comments
-            onCommentSubmit={this.onCommentSubmit}
-            user={this.state.user}
-            items={this.state.comments}
-            subItems={this.state.subComments}
-            onLikeCommentClick={this.onLikeCommentClick}
-            onLoadMoreClick={this.onLoadMoreClick}
-          />
-        }
+          {!user ?
+            <LoginForm
+              onFormSubmit={this.onLoginFormSubmit}
+            /> :
+            <CommentsBlock
+              user={user}
+              comments={comments}
+              subComments={subComments}
+              onCommentSubmit={this.onCommentSubmit}
+              onLoadMoreClick={this.onLoadMoreClick}
+            />
+          }
         </div>
-
-        <footer style={{marginTop: 20, padding: 10}} className="footer">
-          <div className="container">
-            <div className="content has-text-centered">
-              <p>
-                <strong>Feeds</strong> by <a target="_blank" href="http://pusher.com/feeds">Pusher</a>.
-              </p>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     );
   }
