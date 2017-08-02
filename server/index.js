@@ -10,9 +10,9 @@ const feeds = new Feeds({
 
 const app = express();
 
-console.log(__dirname + '/build');
-app.use(express.static(__dirname + '../build'));
+const path = require('path');
 
+app.use(express.static(path.join(__dirname, '../build')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 

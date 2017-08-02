@@ -5,13 +5,13 @@
 #### Yarn
 ```sh
 yarn install
-yarn start
+yarn start-dev
 ```
 
 #### NPM
 ```sh
 npm install
-npm run start
+npm run start-dev
 ```
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
