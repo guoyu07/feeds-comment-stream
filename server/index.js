@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const uuidv4 = require('uuid/v4');
 
 const Feeds = require('pusher-feeds-server');
 
@@ -10,6 +9,9 @@ const feeds = new Feeds({
 });
 
 const app = express();
+
+console.log(__dirname + '/build');
+app.use(express.static(__dirname + '../build'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
