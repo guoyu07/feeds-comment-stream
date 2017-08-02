@@ -1,3 +1,19 @@
+# Pusher Feeds Comments Stream
+
+### Usage
+
+#### Yarn
+```sh
+yarn install
+yarn start
+```
+
+#### NPM
+```sh
+npm install
+npm run start
+```
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>

@@ -14,6 +14,7 @@ const feeds = new Feeds({
 
 class App extends Component {
 
+  commentsFeeds = {};
   subCommentsFeeds = {};
 
   state = {
@@ -33,10 +34,11 @@ class App extends Component {
 
         this.setState({comments: [comment, ...this.state.comments]});
 
-        // Create new feed for every comment item
+        // Create new feed for every new comment
         const newFeedId = `feed-${comment.id}`;
-
         this.subCommentsFeeds[newFeedId] = feeds.feed(newFeedId);
+
+        // Subscribe to new feed for subcomments
         this.subCommentsFeeds[newFeedId].subscribe({
           previousItems: 3,
           onItem: event => {
@@ -89,7 +91,6 @@ class App extends Component {
         const { items } = data;
 
         const formatedItems = items
-          // Just hack around bug in getHistory
           // Remove last requested item
           .filter(item => item.id != commentId)
           .map(item => Object.assign(item.data, { id: item.id }));
