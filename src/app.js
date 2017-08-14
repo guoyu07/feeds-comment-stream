@@ -12,7 +12,7 @@ import Feeds from 'pusher-feeds-client';
 const API_URL = (process.env.NODE_ENV === 'development') ? 'http://localhost:5000' : '';
 
 const feeds = new Feeds({
-  instanceId: YOUR_PUSHER_INSTANCE_ID,
+  instanceId: 'v1:us1:e90dd65c-aff7-47a0-ac66-ebef656e3cdc',
 });
 
 class App extends Component {
@@ -32,8 +32,8 @@ class App extends Component {
     this.commentsFeeds = feeds.feed("comments");
     this.commentsFeeds.subscribe({
       previousItems: 5,
-      onItem: event => {
-        const comment = Object.assign(event.body.data, {id: event.eventId});
+      onItem: item => {
+        const comment = Object.assign(item.data, {id: item.id});
 
         this.setState({comments: [comment, ...this.state.comments]});
 
@@ -44,8 +44,8 @@ class App extends Component {
         // Subscribe to new feed for subcomments
         this.subCommentsFeeds[newFeedId].subscribe({
           previousItems: 3,
-          onItem: event => {
-            const comment = Object.assign(event.body.data, {id: event.eventId});
+          onItem: item => {
+            const comment = Object.assign(item.data, {id: item.id});
 
             this.setState({subComments: [...this.state.subComments, comment]});
           }
@@ -89,7 +89,7 @@ class App extends Component {
     const feed = (parentCommentId) ? this.subCommentsFeeds[`feed-${parentCommentId}`] : this.commentsFeeds;
 
     feed
-      .getHistory({ fromId: commentId, limit: 10 })
+      .paginate({ cursor: commentId, limit: 10 })
       .then((data) => {
         const { items } = data;
 

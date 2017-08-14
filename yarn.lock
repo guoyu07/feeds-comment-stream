@@ -5123,11 +5123,11 @@ punycode@^1.2.4, punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
 
-pusher-feeds-client@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/pusher-feeds-client/-/pusher-feeds-client-0.7.0.tgz#2b409db0e1e97444abf6a3f32dd3890e3b452734"
+pusher-feeds-client@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/pusher-feeds-client/-/pusher-feeds-client-0.8.1.tgz#0e11e5d4c3ef4258380d10617da9b38084055580"
   dependencies:
-    pusher-platform "^0.6.1"
+    pusher-platform "^0.7.0"
 
 pusher-feeds-server@^0.4.0:
   version "0.4.0"
@@ -5146,9 +5146,9 @@ pusher-platform-node@^0.8.0:
     jsonwebtoken "^7.4.1"
     request "^2.81.0"
 
-pusher-platform@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/pusher-platform/-/pusher-platform-0.6.1.tgz#85e495f3e1858ca4073a18c13359b82506c22017"
+pusher-platform@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/pusher-platform/-/pusher-platform-0.7.0.tgz#fa22ed6ba7f6747da53c96cdec827308e8101df4"
   dependencies:
     jwt-simple "^0.5.1"
 
@@ -6408,7 +6408,7 @@ uuid@^2.0.1, uuid@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
 
-uuid@^3.0.0, uuid@^3.1.0:
+uuid@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
 
