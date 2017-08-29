@@ -4,8 +4,8 @@ const bodyParser = require('body-parser');
 const Feeds = require('pusher-feeds-server');
 
 const feeds = new Feeds({
-  instanceId: 'v1:us1:e90dd65c-aff7-47a0-ac66-ebef656e3cdc',
-  key: '4fabe6cc-3674-4378-a281-cfee86bf9fce:JPBFKpj/ffWx9Lih3ywD90IzRbnorF/WRKAX6Y2klC4='
+  instanceId: 'v1:us1:7c9137f0-955d-447c-b317-2eba4597af2d',
+  key: '71d4097e-6b85-4160-ae47-0b01853e4ab2:XdKRQc88QfIBpazVdOEpLuHm3x3BDbKbbs75qpa8ZbM='
 });
 
 const app = express();

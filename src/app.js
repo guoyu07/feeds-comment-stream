@@ -9,7 +9,7 @@ import LoginForm from './login-form.js';
 import Feeds from 'pusher-feeds-client';
 
 const feeds = new Feeds({
-  instanceId: "v1:us1:e90dd65c-aff7-47a0-ac66-ebef656e3cdc",
+  instanceId: "v1:us1:7c9137f0-955d-447c-b317-2eba4597af2d",
 });
 
 class App extends Component {
@@ -30,7 +30,7 @@ class App extends Component {
     this.commentsFeeds.subscribe({
       previousItems: 5,
       onItem: event => {
-        const comment = Object.assign(event.data, {id: event.eventId});
+        const comment = Object.assign(event.data, {id: event.id});
 
         this.setState({comments: [comment, ...this.state.comments]});
 
@@ -42,7 +42,7 @@ class App extends Component {
         this.subCommentsFeeds[newFeedId].subscribe({
           previousItems: 3,
           onItem: event => {
-            const comment = Object.assign(event.data, {id: event.eventId});
+            const comment = Object.assign(event.data, {id: event.id});
 
             this.setState({subComments: [...this.state.subComments, comment]});
           }
