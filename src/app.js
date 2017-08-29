@@ -30,7 +30,7 @@ class App extends Component {
     this.commentsFeeds.subscribe({
       previousItems: 5,
       onItem: event => {
-        const comment = Object.assign(event.body.data, {id: event.eventId});
+        const comment = Object.assign(event.data, {id: event.eventId});
 
         this.setState({comments: [comment, ...this.state.comments]});
 
@@ -42,7 +42,7 @@ class App extends Component {
         this.subCommentsFeeds[newFeedId].subscribe({
           previousItems: 3,
           onItem: event => {
-            const comment = Object.assign(event.body.data, {id: event.eventId});
+            const comment = Object.assign(event.data, {id: event.eventId});
 
             this.setState({subComments: [...this.state.subComments, comment]});
           }
@@ -94,7 +94,7 @@ class App extends Component {
           // Remove last requested item
           .filter(item => item.id != commentId)
           .map(item => Object.assign(item.data, { id: item.id }));
-        
+
         if (formatedItems.length < 1) {
           if (this.state.subComments.length > 0) {
             this.state.subComments[0].hasNextItem = false;
@@ -103,7 +103,7 @@ class App extends Component {
           return;
         }
 
-        formatedItems[formatedItems.length - 1].hasNextItem = typeof data.next_id === 'string'; 
+        formatedItems[formatedItems.length - 1].hasNextItem = typeof data.next_id === 'string';
 
         if (parentCommentId) {
           formatedItems.sort(item => item.created);
@@ -120,7 +120,7 @@ class App extends Component {
     return (
       <div className="container">
         <Header />
-        
+
         {this.getError()}
 
         <div className="content">

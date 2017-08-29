@@ -5123,32 +5123,32 @@ punycode@^1.2.4, punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
 
-pusher-feeds-client@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/pusher-feeds-client/-/pusher-feeds-client-0.7.0.tgz#2b409db0e1e97444abf6a3f32dd3890e3b452734"
+pusher-feeds-client@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/pusher-feeds-client/-/pusher-feeds-client-0.9.1.tgz#713cfa66c48ceb50e1bfaba2943d6f8739fe47da"
   dependencies:
-    pusher-platform "^0.6.1"
+    pusher-platform "^0.8.0-alpha.3"
 
-pusher-feeds-server@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/pusher-feeds-server/-/pusher-feeds-server-0.4.0.tgz#921005a804552f77c1bae40c00856dde8ba9144c"
+pusher-feeds-server@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/pusher-feeds-server/-/pusher-feeds-server-0.5.0.tgz#719ff7c5f942098b26f95ebb64b4e04966278fb5"
   dependencies:
     babel-runtime "^6.23.0"
     jsonwebtoken "^7.4.1"
-    pusher-platform-node "^0.8.0"
+    pusher-platform-node "^0.8.2"
 
-pusher-platform-node@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/pusher-platform-node/-/pusher-platform-node-0.8.0.tgz#9aabb6e1edea4996812f122ca6d53806ec0b317b"
+pusher-platform-node@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/pusher-platform-node/-/pusher-platform-node-0.8.2.tgz#c0ceb6e43ebeeb3ea5a7558bad0ad9028dcfa6a8"
   dependencies:
     body-parser "^1.17.2"
     extend "^2.0.1"
     jsonwebtoken "^7.4.1"
     request "^2.81.0"
 
-pusher-platform@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/pusher-platform/-/pusher-platform-0.6.1.tgz#85e495f3e1858ca4073a18c13359b82506c22017"
+pusher-platform@^0.8.0-alpha.3:
+  version "0.8.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/pusher-platform/-/pusher-platform-0.8.0-alpha.3.tgz#513a15357a1424f427d270566d893b0aa474fc6f"
   dependencies:
     jwt-simple "^0.5.1"
 
@@ -6408,7 +6408,7 @@ uuid@^2.0.1, uuid@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
 
-uuid@^3.0.0, uuid@^3.1.0:
+uuid@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
 
