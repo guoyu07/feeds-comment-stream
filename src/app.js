@@ -12,42 +12,94 @@ import Feeds from 'pusher-feeds-client';
 const API_URL = (process.env.NODE_ENV === 'development') ? 'http://localhost:5000' : '';
 
 const feeds = new Feeds({
-  instanceId: 'v1:us1:e90dd65c-aff7-47a0-ac66-ebef656e3cdc',
+  instanceId: '',
 });
 
 class App extends Component {
 
-  commentsFeeds = {};
-  subCommentsFeeds = {};
+  commentsFeed = {};
+  repliesFeeds = {};
 
   state = {
-    comments: [],
-    subComments: [],
+    comments: {
+      items: [],
+      remaining: null,
+      nextCursor: null
+    },
+    replies: {},
     user: null
   };
 
   componentWillMount () {
     this.setState({user: localStorage.getItem('username')});
 
-    this.commentsFeeds = feeds.feed("comments");
-    this.commentsFeeds.subscribe({
+    this.commentsFeed = feeds.feed("comments");
+    this.commentsFeed.subscribe({
       previousItems: 5,
+      onOpen: ({ remaining, next_cursor }) => {
+        this.setState({
+          comments: {
+            ...this.state.comments,
+            remaining,
+            nextCursor: next_cursor,
+          }
+        });
+      },
       onItem: item => {
-        const comment = Object.assign(item.data, {id: item.id});
+        const comment = {...item.data, id: item.id};
+        const newComments = {
+          ...this.state.comments,
+          items: [comment, ...this.state.comments.items]
+        };
 
-        this.setState({comments: [comment, ...this.state.comments]});
+        this.setState({ comments: newComments });
 
         // Create new feed for every new comment
         const newFeedId = `feed-${comment.id}`;
-        this.subCommentsFeeds[newFeedId] = feeds.feed(newFeedId);
+        this.repliesFeeds[newFeedId] = feeds.feed(newFeedId);
 
-        // Subscribe to new feed for subcomments
-        this.subCommentsFeeds[newFeedId].subscribe({
+        // Subscribe to new feed for replies
+        this.repliesFeeds[newFeedId].subscribe({
           previousItems: 3,
+          onOpen: ({ remaining, next_cursor }) => {
+            this.setState({
+              replies: {
+                ...this.state.replies,
+                [comment.id]: {
+                  items: [],
+                  remaining,
+                  nextCursor: next_cursor
+                }
+              }
+            });
+          },
           onItem: item => {
-            const comment = Object.assign(item.data, {id: item.id});
+            const reply = {...item.data, id: item.id};
 
-            this.setState({subComments: [...this.state.subComments, comment]});
+            // If replies already exists
+            if (this.state.replies[comment.id]) {
+              this.setState({
+                replies: {
+                  ...this.state.replies,
+                  [comment.id]: {
+                    ...this.state.replies[comment.id],
+                    items: [...this.state.replies[comment.id].items, reply]
+                  }
+                }
+              });
+              return;
+            }
+
+            this.setState({
+              replies: {
+                [comment.id]: {
+                  items: [reply],
+                  remaining: null,
+                  nextCursor: null
+                },
+                ...this.state.replies
+              }
+            });
           }
         });
       },
@@ -86,44 +138,43 @@ class App extends Component {
   };
 
   onLoadMoreClick = (commentId, parentCommentId) => {
-    const feed = (parentCommentId) ? this.subCommentsFeeds[`feed-${parentCommentId}`] : this.commentsFeeds;
+    const feed = (parentCommentId) ? this.repliesFeeds[`feed-${parentCommentId}`] : this.commentsFeed;
 
     feed
-      .paginate({ cursor: commentId, limit: 10 })
+      .paginate({ cursor: commentId, limit: 11 })
       .then((data) => {
-        const { items } = data;
+        const { items, remaining, next_cursor } = data;
 
         const formatedItems = items
           // Remove last requested item
           .filter(item => item.id !== commentId)
           .map(item => Object.assign(item.data, { id: item.id }));
-        
-        // If there is no history item
-        if (formatedItems.length < 1) {
-          // Remove loadMore button for this subComments feed
-          if (this.state.subComments.length > 0) {
-            const newSubcomments = this.state.subComments.slice();
-            newSubcomments[0].hasNextItem = false;
-
-            this.setState({subComments: newSubcomments});
-          }
-          return;
-        }
-
-        formatedItems[formatedItems.length - 1].hasNextItem = typeof data.next_id === 'string'; 
 
         if (parentCommentId) {
           formatedItems.sort(item => item.created);
-          this.setState({subComments: [...formatedItems, ...this.state.subComments]});
+          this.setState({
+            replies: {
+              [parentCommentId]: {
+                items: [...formatedItems, ...this.state.replies[parentCommentId].items],
+                remaining: remaining,
+                nextCursor: next_cursor
+              }
+            }
+          });
         } else {
-          this.setState({comments: [...this.state.comments, ...formatedItems]});
+          this.setState({
+            comments: {
+              items: [...this.state.comments.items, ...formatedItems],
+              remaining: remaining,
+              nextCursor: next_cursor
+            }
+          });
         }
       });
   };
 
   render() {
-    const { user, comments, subComments } = this.state;
-
+    const { user, comments, replies } = this.state;
     return (
       <div className="container">
         <Header />
@@ -138,7 +189,7 @@ class App extends Component {
             <CommentsBlock
               user={user}
               comments={comments}
-              subComments={subComments}
+              replies={replies}
               onCommentSubmit={this.onCommentSubmit}
               onLoadMoreClick={this.onLoadMoreClick}
             />

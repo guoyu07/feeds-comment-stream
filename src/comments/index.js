@@ -65,7 +65,8 @@ export default class CommentsBlock extends Component {
   }
 
   render() {
-    const { comments, subComments } = this.props;
+    const { comments, replies, remaining } = this.props;
+    const commentsItems = comments.items;
 
     return (
       <div>
@@ -75,16 +76,13 @@ export default class CommentsBlock extends Component {
             this.getTextarea((e) => this.onCommentSubmit(e, false)) :
             null
         }
-        {comments.map((comment, i) => (
-          <CommentItem
+        {commentsItems.map((comment, i) => {
+          console.log(replies[comment.id])
+          return <CommentItem
             key={comment.id}
             onReplyClick={this.onReplyClick}
             onLoadMoreClick={this.onLoadMoreClick}
-            subComments={
-              // Filter all subcomments for current comment
-              subComments
-                .filter(subComment => subComment.parentCommentId === comment.id)
-            }
+            replies={replies[comment.id]}
             {...comment}
           >
             {
@@ -93,11 +91,15 @@ export default class CommentsBlock extends Component {
                 null
             }
           </CommentItem>
-        ))}
+        })
+        }
         {
-          // Render "load more button" if last item has "hasNextItem" property
-          comments.length > 4 && comments[comments.length-1].hasNextItem !== false ? 
-            <LoadMoreButton onButtonClick={(e) => this.onLoadMoreClick(e, comments[comments.length-1].id, false)} />
+          // Check whether there are any remaining comments
+          commentsItems.length > 4 && comments.remaining ?
+            <LoadMoreButton
+              remaining={comments.remaining}
+              onButtonClick={(e) => this.onLoadMoreClick(e, commentsItems[commentsItems.length-1].id, false)}
+            />
             : null
         }
       </div>
